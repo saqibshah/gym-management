@@ -1,7 +1,7 @@
 import React from "react";
 
 const ClientsPage = () => {
-  return <div>Clients Page</div>;
+  return <div>ClientsPage</div>;
 };
 
 export default ClientsPage;
