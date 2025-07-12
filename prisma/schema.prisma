@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ClientCategory {
+  personal
+  group
+  self
+  cricketer
+}
+
+enum Shift {
+  morning
+  evening
+}
+
+enum TrainerShift {
+  morning
+  evening
+  both
+}
+
+enum Gender {
+  male
+  female
+}
+
+model Client {
+  id               Int            @id @default(autoincrement())
+  name             String
+  membershipNumber String         @unique
+  contact          String
+  gender           Gender
+  category         ClientCategory
+  fee              Int
+  shift            Shift
+  status           String         @default("active")
+  joinedAt         DateTime       @default(now())
+
+  // Relationships
+  assignedTrainer   Trainer? @relation("Client_assignedTrainer", fields: [assignedTrainerId], references: [id])
+  assignedTrainerId Int?
+
+  groupClass   GroupClass? @relation(fields: [groupClassId], references: [id])
+  groupClassId Int?
+
+  payments   Payment[]
+  attendance Attendance[]
+}
+
+model Trainer {
+  id              Int          @id @default(autoincrement())
+  name            String
+  trainerNumber   String       @unique
+  specialization  String?
+  shift           TrainerShift
+  canTakeGroup    Boolean
+  canTakePersonal Boolean
+
+  // Opposite side of Client.assignedTrainer
+  personalClients Client[]     @relation("Client_assignedTrainer")
+  groupClasses    GroupClass[]
+}
+
+model GroupClass {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  trainer   Trainer  @relation(fields: [trainerId], references: [id])
+  trainerId Int
+  time      String
+  days      String[]
+  shift     Shift
+  gender    Gender? // optional if class is gender-specific
+
+  clients Client[]
+}
+
+model Payment {
+  id       Int      @id @default(autoincrement())
+  client   Client   @relation(fields: [clientId], references: [id])
+  clientId Int
+  amount   Int
+  month    String
+  paidAt   DateTime @default(now())
+  method   String // cash, bank, online
+}
+
+model Attendance {
+  id        Int            @id @default(autoincrement())
+  client    Client         @relation(fields: [clientId], references: [id])
+  clientId  Int
+  date      DateTime
+  shift     Shift
+  type      ClientCategory
+  trainerId Int?
+}
