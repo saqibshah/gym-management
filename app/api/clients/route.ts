@@ -1,8 +1,9 @@
 import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import schema from "./schema";
-
 import { z } from "zod";
+import { clientSchema } from "../../validationSchemas";
+import { getServerSession } from "next-auth";
+import authOptions from "@/app/auth/authOptions";
 
 export async function GET() {
   const clients = await prisma.client.findMany();
@@ -11,30 +12,25 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
   const body = await request.json();
-  const validation = schema.safeParse(body);
+  const validation = clientSchema.safeParse(body);
 
   if (!validation.success)
     return NextResponse.json(z.treeifyError(validation.error), { status: 400 });
 
-  const client = await prisma.client.findUnique({
-    where: { membershipNumber: body.membershipNumber },
-  });
-  if (client)
-    return NextResponse.json(
-      { error: "Client already exists" },
-      { status: 400 }
-    );
-
   const newClient = await prisma.client.create({
     data: {
       name: body.name,
-      membershipNumber: body.membershipNumber,
       contact: body.contact,
       gender: body.gender,
       category: body.category,
       fee: body.fee,
       shift: body.shift,
+      assignedTrainerId: body.assignedTrainerId,
+      groupClassId: body.groupClassId,
     },
   });
 
