@@ -5,20 +5,27 @@ import Actions from "../components/Actions";
 
 const LoadingClientsPage = () => {
   const clients = [1, 2, 3, 4, 5];
+
+  const TableHeader = () => {
+    const columns = ["Sr#", "Name", "Shift", "Specialization", "Actions"];
+    return (
+      <Table.Header>
+        <Table.Row>
+          {columns.map((column, idx) => (
+            <Table.ColumnHeaderCell key={idx + 1}>
+              {column}
+            </Table.ColumnHeaderCell>
+          ))}
+        </Table.Row>
+      </Table.Header>
+    );
+  };
+
   return (
     <div>
-      <Actions href="/clients/new" title="Add New Client" />
+      <Actions href="/trainers/new" title="Add New Trainer" />
       <Table.Root variant="surface">
-        <Table.Header>
-          <Table.Row>
-            <Table.ColumnHeaderCell>Sr #</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Client Details</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Fee</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
-          </Table.Row>
-        </Table.Header>
+        <TableHeader />
         <Table.Body>
           {clients.map((client) => (
             <Table.Row key={client}>
@@ -28,14 +35,11 @@ const LoadingClientsPage = () => {
               </Table.Cell>
               <Table.Cell>
                 {" "}
-                <Skeleton count={3} />{" "}
+                <Skeleton />{" "}
               </Table.Cell>
               <Table.Cell>
                 {" "}
                 <Skeleton />{" "}
-              </Table.Cell>
-              <Table.Cell>
-                <Skeleton />
               </Table.Cell>
               <Table.Cell>
                 <Skeleton />

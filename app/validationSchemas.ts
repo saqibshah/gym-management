@@ -18,3 +18,26 @@ export const clientSchema = z.object({
   assignedTrainerId: z.number().optional().nullable(),
   groupClassId: z.number().optional().nullable(),
 });
+
+export const trainerSchema = z.object({
+  name: z.string().min(1),
+  specialization: z
+    .string()
+    .min(3, "This must be at least 3 characters")
+    .or(z.literal(""))
+    .optional(),
+  shift: z.enum(["morning", "evening", "both"], "Select one"),
+  canTakeGroup: z.boolean(),
+  canTakePersonal: z.boolean(),
+});
+
+export const groupClassSchema = z.object({
+  name: z.string().min(1, "Enter Name"),
+  trainerId: z.number("Choose a trainer").int().positive(),
+  time: z.string().min(1, "Enter time."),
+  days: z
+    .array(z.enum(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]))
+    .min(1, { message: "Select at least one day" }),
+  shift: z.enum(["morning", "evening"], "Select one"),
+  gender: z.enum(["male", "female"], "Gender is required."),
+});

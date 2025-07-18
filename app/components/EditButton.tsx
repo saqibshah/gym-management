@@ -2,13 +2,18 @@ import { Pencil2Icon } from "@radix-ui/react-icons";
 import { Button } from "@radix-ui/themes";
 import Link from "next/link";
 
-const EditClientButton = ({ id }: { id: number }) => {
+interface Props {
+  title: string;
+  href: string;
+}
+
+const EditButton = ({ title, href }: Props) => {
   return (
     <Button>
       <Pencil2Icon />
-      <Link href={`/clients/${id}/edit`}>Edit Client</Link>
+      <Link href={href}>{title}</Link>
     </Button>
   );
 };
 
-export default EditClientButton;
+export default EditButton;

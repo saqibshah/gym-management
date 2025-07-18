@@ -62,7 +62,6 @@ model Client {
 model Trainer {
   id              Int          @id @default(autoincrement())
   name            String
-  trainerNumber   String       @unique
   specialization  String?
   shift           TrainerShift
   canTakeGroup    Boolean
@@ -81,7 +80,7 @@ model GroupClass {
   time      String
   days      String[]
   shift     Shift
-  gender    Gender? // optional if class is gender-specific
+  gender    Gender // optional if class is gender-specific
 
   clients Client[]
 }

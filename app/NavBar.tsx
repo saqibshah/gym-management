@@ -37,8 +37,8 @@ const NavLinks = () => {
   const links = [
     { label: "Dashboard", href: "/" },
     { label: "Clients", href: "/clients" },
-    { label: "Group Classes", href: "/group-classes" },
     { label: "Trainers", href: "/trainers" },
+    { label: "Group Classes", href: "/group-classes" },
     { label: "Payments", href: "/payments" },
   ];
 

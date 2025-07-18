@@ -7,10 +7,10 @@ const genderMap: Record<Gender, { label: string; color: "pink" | "blue" }> = {
   female: { label: "Female", color: "pink" },
 };
 
-const ClientGenderBadge = ({ gender }: { gender: Gender }) => {
+const GenderBadge = ({ gender }: { gender: Gender }) => {
   return (
     <Badge color={genderMap[gender].color}>{genderMap[gender].label}</Badge>
   );
 };
 
-export default ClientGenderBadge;
+export default GenderBadge;

@@ -130,14 +130,15 @@ const ClientForm = ({ client }: { client?: Client }) => {
                 defaultValue={client?.assignedTrainerId}
                 render={({ field }) => (
                   <Select.Root
-                    // onValueChange={field.onChange}
+                    {...field}
                     onValueChange={(val) =>
-                      field.onChange(val === "" ? "" : Number(val))
+                      field.onChange(val === "none" ? null : Number(val))
                     }
-                    defaultValue={field.value?.toString() || ""}
+                    value={field.value?.toString() || "none"}
                   >
                     <Select.Trigger placeholder="Select Trainer" />
                     <Select.Content position="popper">
+                      <Select.Item value="none">Select Trainer</Select.Item>
                       {trainers?.map((trainer) => (
                         <Select.Item
                           key={trainer.id}

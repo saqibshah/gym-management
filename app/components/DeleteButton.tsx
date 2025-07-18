@@ -5,7 +5,13 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const DeleteClientButton = ({ id }: { id: number }) => {
+interface Props {
+  id: number;
+  title: string;
+  path: string;
+}
+
+const DeleteButton = ({ id, title, path }: Props) => {
   const router = useRouter();
   const [error, setError] = useState(false);
   const [isDeleting, setDeleting] = useState(false);
@@ -13,8 +19,8 @@ const DeleteClientButton = ({ id }: { id: number }) => {
   const deleteClient = async () => {
     try {
       setDeleting(true);
-      await axios.delete("/api/clients/" + id);
-      router.push("/clients");
+      await axios.delete(`/api/${path}/${id}`);
+      router.push(`/${path}`);
       router.refresh();
     } catch (catch_error) {
       console.log(catch_error);
@@ -28,15 +34,14 @@ const DeleteClientButton = ({ id }: { id: number }) => {
       <AlertDialog.Root>
         <AlertDialog.Trigger>
           <Button color="red" disabled={isDeleting}>
-            Delete Client
+            {title}
             {isDeleting && <Spinner />}
           </Button>
         </AlertDialog.Trigger>
         <AlertDialog.Content maxWidth="450px">
           <AlertDialog.Title>Confirm Deletion</AlertDialog.Title>
           <AlertDialog.Description size="2">
-            Are you sure you want to delete this client? This action cannot be
-            undone.
+            Are you sure you want to delete this? This action cannot be undone.
           </AlertDialog.Description>
 
           <Flex gap="3" mt="4" justify="end">
@@ -47,7 +52,7 @@ const DeleteClientButton = ({ id }: { id: number }) => {
             </AlertDialog.Cancel>
             <AlertDialog.Action>
               <Button variant="solid" color="red" onClick={deleteClient}>
-                Delete Client
+                {title}
               </Button>
             </AlertDialog.Action>
           </Flex>
@@ -58,7 +63,7 @@ const DeleteClientButton = ({ id }: { id: number }) => {
         <AlertDialog.Content maxWidth="450px">
           <AlertDialog.Title>Error</AlertDialog.Title>
           <AlertDialog.Description>
-            This client cannot be deleted.
+            This cannot be deleted.
           </AlertDialog.Description>
           <Flex gap="3" mt="4" justify="end">
             <Button color="gray" variant="soft" onClick={() => setError(false)}>
@@ -71,4 +76,4 @@ const DeleteClientButton = ({ id }: { id: number }) => {
   );
 };
 
-export default DeleteClientButton;
+export default DeleteButton;
