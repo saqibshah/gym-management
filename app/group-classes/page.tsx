@@ -1,10 +1,11 @@
 import { prisma } from "@/prisma/client";
-import { Flex, Table } from "@radix-ui/themes";
+import { Button, Flex, Table } from "@radix-ui/themes";
 import React from "react";
 import DeleteButton from "../components/DeleteButton";
 import EditButton from "../components/EditButton";
 import Actions from "../components/Actions";
 import { GenderBadge } from "../components";
+import Link from "next/link";
 
 const TrainersPage = async () => {
   const groupClasses = await prisma.groupClass.findMany({
@@ -54,6 +55,11 @@ const TrainersPage = async () => {
             </Table.Cell>
             <Table.Cell>
               <Flex direction="column" gap="4">
+                <Button>
+                  <Link href={`/group-classes/${groupClass.id}/clients`}>
+                    View Clients
+                  </Link>
+                </Button>
                 {
                   <EditButton
                     title="Edit Class"

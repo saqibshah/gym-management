@@ -41,3 +41,13 @@ export const groupClassSchema = z.object({
   shift: z.enum(["morning", "evening"], "Select one"),
   gender: z.enum(["male", "female"], "Gender is required."),
 });
+
+export const paymentSchema = z.object({
+  clientId: z.number().int().positive(),
+  amount: z.number().int().nonnegative(),
+  month: z.string().min(1, "Enter month"),
+  method: z.enum(["cash", "bank", "online"]),
+  paidAt: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), "Enter a valid date"),
+});

@@ -1,6 +1,6 @@
+import { paymentSchema } from "@/app/validationSchemas";
 import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import schema from "./schema";
 import z from "zod";
 
 export async function GET() {
@@ -11,7 +11,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
-  const validation = schema.safeParse(body);
+  const validation = paymentSchema.safeParse(body);
 
   if (!validation.success)
     return NextResponse.json(z.treeifyError(validation.error), { status: 400 });
@@ -29,6 +29,7 @@ export async function POST(request: NextRequest) {
       amount: body.amount,
       month: body.month,
       method: body.method,
+      paidAt: new Date(body.paidAt),
     },
   });
 

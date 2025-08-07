@@ -8,6 +8,7 @@ import EditButton from "../components/EditButton";
 import DeleteButton from "../components/DeleteButton";
 import { format } from "date-fns";
 import PaymentStatus from "./_components/PaymentStatus";
+import Link from "next/link";
 
 const ClientsPage = async () => {
   const clients = await prisma.client.findMany({
@@ -16,7 +17,6 @@ const ClientsPage = async () => {
       payments: {
         select: { month: true, method: true, paidAt: true, amount: true },
         orderBy: { month: "desc" },
-        take: 1,
       },
     },
     orderBy: { id: "asc" },
@@ -67,16 +67,18 @@ const ClientsPage = async () => {
             </Table.Cell>
             <Table.Cell>
               <PaymentStatus
-                payments={client.payments.map((p) => ({
-                  paidAt: p.paidAt,
-                  method: p.method,
-                }))}
+                joinedAt={client.joinedAt}
+                payments={client.payments}
               />
             </Table.Cell>
             {session && (
               <Table.Cell>
                 <Flex direction="column" gap="4">
-                  <Button>Record Payment</Button>
+                  <Button>
+                    <Link href={`/clients/${client.id}/add-payment`}>
+                      Record Payment
+                    </Link>
+                  </Button>
                   <EditButton
                     title="Edit Client"
                     href={`/clients/${client.id}/edit`}

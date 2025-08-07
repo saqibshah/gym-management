@@ -9,7 +9,7 @@ const PaymentsPage = async () => {
   });
 
   const TableHeader = () => {
-    const columns = ["Client", "Amount", "Month", "Method"];
+    const columns = ["Client", "Amount", "Paid at", "Method"];
     return (
       <Table.Header>
         <Table.Row>
@@ -30,7 +30,7 @@ const PaymentsPage = async () => {
           <Table.Row key={payment.id}>
             <Table.Cell>{payment.client.name}</Table.Cell>
             <Table.Cell>{payment.amount}</Table.Cell>
-            <Table.Cell>{payment.month}</Table.Cell>
+            <Table.Cell>{payment.paidAt.toDateString()}</Table.Cell>
             <Table.Cell>{payment.method}</Table.Cell>
           </Table.Row>
         ))}
