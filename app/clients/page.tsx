@@ -9,6 +9,7 @@ import DeleteButton from "../components/DeleteButton";
 import EditButton from "../components/EditButton";
 import GenderBadge from "../components/GenderBadge";
 import PaymentStatus from "./_components/PaymentStatus";
+import ClientPaymentFilter from "./ClientPaymentFilter";
 
 const ClientsPage = async () => {
   const clients = await prisma.client.findMany({
@@ -106,7 +107,14 @@ const ClientsPage = async () => {
 
   return (
     <div>
-      <Actions href="/clients/new" title="Add New Client" />
+      {/* <Actions href="/clients/new" title="Add New Client" /> */}
+
+      <Flex mb="5" justify="between">
+        <ClientPaymentFilter />
+        <Button>
+          <Link href="/clients/new">Add New Client</Link>
+        </Button>
+      </Flex>
 
       <Table.Root variant="surface">
         <TableHeader />

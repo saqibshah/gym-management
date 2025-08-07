@@ -1,4 +1,4 @@
-import { Table } from "@radix-ui/themes";
+import { Flex, Table } from "@radix-ui/themes";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Actions from "../components/Actions";
@@ -7,7 +7,11 @@ const LoadingClientsPage = () => {
   const clients = [1, 2, 3, 4, 5];
   return (
     <div>
-      <Actions href="/clients/new" title="Add New Client" />
+      <Flex mb="5" justify="between">
+        <Skeleton width={165} height={32} />
+        <Skeleton width={127} height={32} />
+      </Flex>
+
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
@@ -17,6 +21,7 @@ const LoadingClientsPage = () => {
             <Table.ColumnHeaderCell>Fee</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Payment Status</Table.ColumnHeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -33,6 +38,9 @@ const LoadingClientsPage = () => {
               <Table.Cell>
                 {" "}
                 <Skeleton />{" "}
+              </Table.Cell>
+              <Table.Cell>
+                <Skeleton />
               </Table.Cell>
               <Table.Cell>
                 <Skeleton />
