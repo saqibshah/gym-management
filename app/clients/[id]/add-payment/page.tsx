@@ -5,6 +5,7 @@ import { Flex, Heading, Table, Text } from "@radix-ui/themes";
 import { addMonths, differenceInMonths, format } from "date-fns";
 import PaymentBadge from "@/app/components/PaymentBadge";
 import PaymentButton from "@/app/components/PaymentButton";
+import { cycleMonths } from "@/app/libs/cycleMonths";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -22,20 +23,7 @@ const NewPaymentPage = async ({ params }: Props) => {
 
   if (!client) notFound();
 
-  const joined = new Date(client.joinedAt);
-  const today = new Date();
-
-  // 1) How many *full* months have passed since joined?
-  const fullMonths = differenceInMonths(today, joined);
-
-  // 2) Should we include the *current* partial month?
-  const includeCurrent = today.getDate() >= joined.getDate();
-
-  // 3) Span = fullMonths + maybe the current
-  let spanMonths = fullMonths + (includeCurrent ? 1 : 0);
-
-  // 4) But at minimum, always show 1 cycle
-  spanMonths = Math.max(1, spanMonths);
+  var { spanMonths, joined } = cycleMonths(client.joinedAt);
 
   const cycles = Array.from({ length: spanMonths })
     .map((_, i) => {
