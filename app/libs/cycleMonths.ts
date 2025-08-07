@@ -5,7 +5,7 @@ export function cycleMonths(joinedAt: Date) {
   const today = new Date();
 
   const fullMonths = differenceInMonths(today, joined);
-  let spanMonths = fullMonths + 1;
+  const spanMonths = fullMonths + 1;
 
   return { spanMonths, joined };
 }

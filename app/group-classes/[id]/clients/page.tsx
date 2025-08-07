@@ -16,8 +16,10 @@ const GroupClassClients = async ({ params }: Props) => {
     include: {
       clients: {
         include: {
-          payments: {
-            orderBy: { paidAt: "asc" },
+          _count: {
+            select: {
+              payments: true,
+            },
           },
         },
       },
@@ -67,9 +69,7 @@ const GroupClassClients = async ({ params }: Props) => {
                 <Table.Cell>
                   <PaymentStatus
                     joinedAt={client.joinedAt}
-                    payments={client.payments.map((p) => ({
-                      paidAt: p.paidAt,
-                    }))}
+                    payments={client._count.payments}
                   />
                 </Table.Cell>
               </Table.Row>

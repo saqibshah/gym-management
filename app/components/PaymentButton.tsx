@@ -60,7 +60,7 @@ const PaymentButton = ({ clientID, amount, month }: Props) => {
           <Flex direction="column" gap="4" className="mt-4">
             <Select.Root
               value={method}
-              onValueChange={(v) => setMethod(v as any)}
+              onValueChange={(v) => setMethod(v as "cash" | "bank" | "online")}
             >
               <Select.Trigger placeholder="Method" />
               <Select.Content position="popper">

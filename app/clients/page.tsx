@@ -1,16 +1,14 @@
 import authOptions from "@/app/auth/authOptions";
 import { prisma } from "@/prisma/client";
 import { Button, Flex, Table, Text } from "@radix-ui/themes";
-import { getServerSession } from "next-auth";
-import Actions from "../components/Actions";
-import GenderBadge from "../components/GenderBadge";
-import EditButton from "../components/EditButton";
-import DeleteButton from "../components/DeleteButton";
 import { format } from "date-fns";
-import PaymentStatus from "./_components/PaymentStatus";
+import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { cycleMonths } from "../libs/cycleMonths";
-import PaymentBadge from "../components/PaymentBadge";
+import Actions from "../components/Actions";
+import DeleteButton from "../components/DeleteButton";
+import EditButton from "../components/EditButton";
+import GenderBadge from "../components/GenderBadge";
+import PaymentStatus from "./_components/PaymentStatus";
 
 const ClientsPage = async () => {
   const clients = await prisma.client.findMany({
@@ -52,9 +50,6 @@ const ClientsPage = async () => {
     return (
       <Table.Body>
         {clients.map((client) => {
-          const { spanMonths } = cycleMonths(client.joinedAt);
-          const pendingInvoices = spanMonths - client._count.payments;
-
           return (
             <Table.Row key={client.id}>
               <Table.Cell>{client.id}</Table.Cell>
@@ -77,20 +72,10 @@ const ClientsPage = async () => {
                 {client.assignedTrainer ? client.assignedTrainer.name : "-"}
               </Table.Cell>
               <Table.Cell>
-                <PaymentBadge
-                  color={pendingInvoices > 0 ? "red" : "green"}
-                  label={
-                    pendingInvoices > 0
-                      ? `${pendingInvoices} Pending Invoice${
-                          pendingInvoices > 1 ? "s" : ""
-                        }`
-                      : "Paid"
-                  }
+                <PaymentStatus
+                  joinedAt={client.joinedAt}
+                  payments={client._count.payments}
                 />
-                {/* <PaymentStatus
-                joinedAt={client.joinedAt}
-                payments={client.payments}
-              /> */}
               </Table.Cell>
               {session && (
                 <Table.Cell>

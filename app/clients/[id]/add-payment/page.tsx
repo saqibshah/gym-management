@@ -1,11 +1,10 @@
-import { prisma } from "@/prisma/client";
-import ClientPaymentForm from "../../_components/PaymentForm";
-import { notFound } from "next/navigation";
-import { Flex, Heading, Table, Text } from "@radix-ui/themes";
-import { addMonths, differenceInMonths, format } from "date-fns";
 import PaymentBadge from "@/app/components/PaymentBadge";
 import PaymentButton from "@/app/components/PaymentButton";
 import { cycleMonths } from "@/app/libs/cycleMonths";
+import { prisma } from "@/prisma/client";
+import { Flex, Heading, Table, Text } from "@radix-ui/themes";
+import { addMonths, format } from "date-fns";
+import { notFound } from "next/navigation";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -23,7 +22,7 @@ const NewPaymentPage = async ({ params }: Props) => {
 
   if (!client) notFound();
 
-  var { spanMonths, joined } = cycleMonths(client.joinedAt);
+  const { spanMonths, joined } = cycleMonths(client.joinedAt);
 
   const cycles = Array.from({ length: spanMonths })
     .map((_, i) => {
