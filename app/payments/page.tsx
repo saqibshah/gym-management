@@ -6,6 +6,7 @@ import Actions from "../components/Actions";
 const PaymentsPage = async () => {
   const payments = await prisma.payment.findMany({
     include: { client: { select: { id: true, name: true } } },
+    orderBy: { id: "desc" },
   });
 
   const TableHeader = () => {
