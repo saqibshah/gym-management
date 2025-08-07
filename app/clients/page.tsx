@@ -9,11 +9,18 @@ import DeleteButton from "../components/DeleteButton";
 import { format } from "date-fns";
 import PaymentStatus from "./_components/PaymentStatus";
 import Link from "next/link";
+import { cycleMonths } from "../libs/cycleMonths";
+import PaymentBadge from "../components/PaymentBadge";
 
 const ClientsPage = async () => {
   const clients = await prisma.client.findMany({
     include: {
       assignedTrainer: { select: { id: true, name: true } },
+      _count: {
+        select: {
+          payments: true,
+        },
+      },
       payments: {
         select: { month: true, method: true, paidAt: true, amount: true },
         orderBy: { month: "desc" },
@@ -44,55 +51,70 @@ const ClientsPage = async () => {
   const TableBody = () => {
     return (
       <Table.Body>
-        {clients.map((client) => (
-          <Table.Row key={client.id}>
-            <Table.Cell>{client.id}</Table.Cell>
-            <Table.Cell>
-              <Flex direction="column" gap="2">
-                <Text>{client.name}</Text>
-                <Text>
-                  <GenderBadge gender={client.gender} />
-                </Text>
-                <Text>{client.contact}</Text>
-                <Text>
-                  Joined: {format(new Date(client.joinedAt), "do MMM yyyy")}
-                </Text>
-              </Flex>
-            </Table.Cell>
-            <Table.Cell>{client.category}</Table.Cell>
-            <Table.Cell>{client.fee}</Table.Cell>
-            <Table.Cell>{client.shift}</Table.Cell>
-            <Table.Cell>
-              {client.assignedTrainer ? client.assignedTrainer.name : "-"}
-            </Table.Cell>
-            <Table.Cell>
-              <PaymentStatus
-                joinedAt={client.joinedAt}
-                payments={client.payments}
-              />
-            </Table.Cell>
-            {session && (
+        {clients.map((client) => {
+          const { spanMonths } = cycleMonths(client.joinedAt);
+          const pendingInvoices = spanMonths - client._count.payments;
+
+          return (
+            <Table.Row key={client.id}>
+              <Table.Cell>{client.id}</Table.Cell>
               <Table.Cell>
-                <Flex direction="column" gap="4">
-                  <Button>
-                    <Link href={`/clients/${client.id}/add-payment`}>
-                      Record Payment
-                    </Link>
-                  </Button>
-                  <EditButton
-                    title="Edit Client"
-                    href={`/clients/${client.id}/edit`}
-                  />
-                  <DeleteButton
-                    id={client.id}
-                    title="Delete Client"
-                    path="clients"
-                  />
+                <Flex direction="column" gap="2">
+                  <Text>{client.name}</Text>
+                  <Text>
+                    <GenderBadge gender={client.gender} />
+                  </Text>
+                  <Text>{client.contact}</Text>
+                  <Text>
+                    Joined: {format(new Date(client.joinedAt), "do MMM yyyy")}
+                  </Text>
                 </Flex>
               </Table.Cell>
-            )}
-          </Table.Row>
-        ))}
+              <Table.Cell>{client.category}</Table.Cell>
+              <Table.Cell>{client.fee}</Table.Cell>
+              <Table.Cell>{client.shift}</Table.Cell>
+              <Table.Cell>
+                {client.assignedTrainer ? client.assignedTrainer.name : "-"}
+              </Table.Cell>
+              <Table.Cell>
+                <PaymentBadge
+                  color={pendingInvoices > 0 ? "red" : "green"}
+                  label={
+                    pendingInvoices > 0
+                      ? `${pendingInvoices} Pending Invoice${
+                          pendingInvoices > 1 ? "s" : ""
+                        }`
+                      : "Paid"
+                  }
+                />
+                {/* <PaymentStatus
+                joinedAt={client.joinedAt}
+                payments={client.payments}
+              /> */}
+              </Table.Cell>
+              {session && (
+                <Table.Cell>
+                  <Flex direction="column" gap="4">
+                    <Button>
+                      <Link href={`/clients/${client.id}/add-payment`}>
+                        Record Payment
+                      </Link>
+                    </Button>
+                    <EditButton
+                      title="Edit Client"
+                      href={`/clients/${client.id}/edit`}
+                    />
+                    <DeleteButton
+                      id={client.id}
+                      title="Delete Client"
+                      path="clients"
+                    />
+                  </Flex>
+                </Table.Cell>
+              )}
+            </Table.Row>
+          );
+        })}
       </Table.Body>
     );
   };
