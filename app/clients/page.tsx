@@ -10,9 +10,21 @@ import EditButton from "../components/EditButton";
 import GenderBadge from "../components/GenderBadge";
 import PaymentStatus from "./_components/PaymentStatus";
 import ClientPaymentFilter from "./ClientPaymentFilter";
+import { cycleMonths } from "../libs/cycleMonths";
+import { Client } from "@prisma/client";
 
-const ClientsPage = async () => {
-  const clients = await prisma.client.findMany({
+interface Props {
+  searchParams: Promise<{ status: "all" | "paid" | "pending" }>;
+}
+
+type ClientWithStatus = Client & {
+  assignedTrainer: { id: number; name: string } | null;
+  _count: { payments: number };
+  paymentStatus?: "paid" | "pending";
+};
+
+const ClientsPage = async ({ searchParams }: Props) => {
+  let clients: ClientWithStatus[] = await prisma.client.findMany({
     include: {
       assignedTrainer: { select: { id: true, name: true } },
       _count: {
@@ -20,13 +32,28 @@ const ClientsPage = async () => {
           payments: true,
         },
       },
-      payments: {
-        select: { month: true, method: true, paidAt: true, amount: true },
-        orderBy: { month: "desc" },
-      },
     },
     orderBy: { id: "asc" },
   });
+
+  // Add computed status to each client
+  clients = clients.map((client) => {
+    const { spanMonths } = cycleMonths(client.joinedAt);
+    const pendingInvoices = spanMonths - client._count.payments;
+
+    return {
+      ...client,
+      paymentStatus: pendingInvoices > 0 ? "pending" : "paid",
+    };
+  });
+
+  const statusFilter = (await searchParams).status;
+
+  // Filter by status if needed
+  const validStatuses = ["paid", "pending"];
+  if (validStatuses.includes(statusFilter)) {
+    clients = clients.filter((client) => client.paymentStatus === statusFilter);
+  }
 
   const session = await getServerSession(authOptions);
 

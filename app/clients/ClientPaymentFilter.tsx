@@ -1,4 +1,6 @@
+"use client";
 import { Select } from "@radix-ui/themes";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 
 const statuses: { label: string; value: string }[] = [
@@ -8,8 +10,17 @@ const statuses: { label: string; value: string }[] = [
 ];
 
 const ClientPaymentFilter = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   return (
-    <Select.Root>
+    <Select.Root
+      defaultValue={searchParams.get("status") || ""}
+      onValueChange={(status) => {
+        const query = status ? `?status=${status}` : "";
+        router.push(query);
+      }}
+    >
       <Select.Trigger placeholder="Filter by payment..." />
       <Select.Content>
         {statuses.map((status) => (
