@@ -1,7 +1,5 @@
 import { prisma } from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
-import React from "react";
-import Actions from "../components/Actions";
 
 const PaymentsPage = async () => {
   const payments = await prisma.payment.findMany({
@@ -41,7 +39,6 @@ const PaymentsPage = async () => {
 
   return (
     <div>
-      <Actions href="/payments/new" title="Record New Payment" />
       <Table.Root variant="surface">
         <TableHeader />
         <TableBody />

@@ -4,22 +4,25 @@ import React from "react";
 import Actions from "../components/Actions";
 import EditButton from "../components/EditButton";
 import DeleteButton from "../components/DeleteButton";
+import { getServerSession } from "next-auth";
+import authOptions from "../auth/authOptions";
 
 const TrainersPage = async () => {
   const trainers = await prisma.trainer.findMany({
     orderBy: { id: "asc" },
   });
 
+  const session = await getServerSession(authOptions);
+
   const TableHeader = () => {
-    const columns = ["Sr#", "Name", "Shift", "Specialization", "Actions"];
     return (
       <Table.Header>
         <Table.Row>
-          {columns.map((column, idx) => (
-            <Table.ColumnHeaderCell key={idx + 1}>
-              {column}
-            </Table.ColumnHeaderCell>
-          ))}
+          <Table.ColumnHeaderCell>Sr#</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Specialization</Table.ColumnHeaderCell>
+          {session && <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>}
         </Table.Row>
       </Table.Header>
     );
@@ -34,23 +37,25 @@ const TrainersPage = async () => {
             <Table.Cell>{trainer.name}</Table.Cell>
             <Table.Cell>{trainer.shift}</Table.Cell>
             <Table.Cell>{trainer.specialization || "-"}</Table.Cell>
-            <Table.Cell>
-              <Flex direction="column" gap="4">
-                {
-                  <EditButton
-                    title="Edit Trainer"
-                    href={`/trainers/${trainer.id}/edit`}
-                  />
-                }
-                {
-                  <DeleteButton
-                    id={trainer.id}
-                    path="trainers"
-                    title="Delete Trainer"
-                  />
-                }
-              </Flex>
-            </Table.Cell>
+            {session && (
+              <Table.Cell>
+                <Flex direction="column" gap="4">
+                  {
+                    <EditButton
+                      title="Edit Trainer"
+                      href={`/trainers/${trainer.id}/edit`}
+                    />
+                  }
+                  {
+                    <DeleteButton
+                      id={trainer.id}
+                      path="trainers"
+                      title="Delete Trainer"
+                    />
+                  }
+                </Flex>
+              </Table.Cell>
+            )}
           </Table.Row>
         ))}
       </Table.Body>

@@ -6,6 +6,8 @@ import EditButton from "../components/EditButton";
 import Actions from "../components/Actions";
 import { GenderBadge } from "../components";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import authOptions from "../auth/authOptions";
 
 const TrainersPage = async () => {
   const groupClasses = await prisma.groupClass.findMany({
@@ -15,25 +17,20 @@ const TrainersPage = async () => {
     orderBy: { id: "asc" },
   });
 
+  const session = await getServerSession(authOptions);
+
   const TableHeader = () => {
-    const columns = [
-      "Sr#",
-      "Name",
-      "Trainer",
-      "Time",
-      "Days",
-      "Shift",
-      "Gender",
-      "Actions",
-    ];
     return (
       <Table.Header>
         <Table.Row>
-          {columns.map((column, idx) => (
-            <Table.ColumnHeaderCell key={idx + 1}>
-              {column}
-            </Table.ColumnHeaderCell>
-          ))}
+          <Table.ColumnHeaderCell>Sr#</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Time</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Days</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
+          <Table.ColumnHeaderCell>Gender</Table.ColumnHeaderCell>
+          {session && <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>}
         </Table.Row>
       </Table.Header>
     );
@@ -53,28 +50,30 @@ const TrainersPage = async () => {
             <Table.Cell>
               <GenderBadge gender={groupClass.gender} />
             </Table.Cell>
-            <Table.Cell>
-              <Flex direction="column" gap="4">
-                <Button>
-                  <Link href={`/group-classes/${groupClass.id}/clients`}>
-                    View Clients
-                  </Link>
-                </Button>
-                {
-                  <EditButton
-                    title="Edit Class"
-                    href={`/group-classes/${groupClass.id}/edit`}
-                  />
-                }
-                {
-                  <DeleteButton
-                    id={groupClass.id}
-                    path="group-classes"
-                    title="Delete Class"
-                  />
-                }
-              </Flex>
-            </Table.Cell>
+            {session && (
+              <Table.Cell>
+                <Flex direction="column" gap="4">
+                  <Button>
+                    <Link href={`/group-classes/${groupClass.id}/clients`}>
+                      View Clients
+                    </Link>
+                  </Button>
+                  {
+                    <EditButton
+                      title="Edit Class"
+                      href={`/group-classes/${groupClass.id}/edit`}
+                    />
+                  }
+                  {
+                    <DeleteButton
+                      id={groupClass.id}
+                      path="group-classes"
+                      title="Delete Class"
+                    />
+                  }
+                </Flex>
+              </Table.Cell>
+            )}
           </Table.Row>
         ))}
       </Table.Body>

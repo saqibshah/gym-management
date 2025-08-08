@@ -2,6 +2,8 @@ import { prisma } from "@/prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { trainerSchema } from "@/app/validationSchemas";
+import authOptions from "@/app/auth/authOptions";
+import { getServerSession } from "next-auth";
 
 export async function GET() {
   const trainers = await prisma.trainer.findMany();
@@ -9,6 +11,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const session = await getServerSession(authOptions);
+  if (!session) return NextResponse.json({}, { status: 401 });
+
   const body = await request.json();
   const validation = trainerSchema.safeParse(body);
 

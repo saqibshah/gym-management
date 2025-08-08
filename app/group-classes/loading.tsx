@@ -1,26 +1,30 @@
 import { Flex, Table } from "@radix-ui/themes";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { getServerSession } from "next-auth";
+import authOptions from "../auth/authOptions";
+import Actions from "../components/Actions";
 
-const LoadingClientsPage = () => {
+const LoadingClientsPage = async () => {
   const clients = [1, 2, 3, 4, 5];
+  const session = await getServerSession(authOptions);
   return (
     <div>
-      <Flex mb="5" justify="between">
-        <Skeleton width={165} height={32} />
-        <Skeleton width={127} height={32} />
-      </Flex>
+      <Actions href="/group-classes/new" title="Add New Class" />
 
       <Table.Root variant="surface">
         <Table.Header>
           <Table.Row>
-            <Table.ColumnHeaderCell>Sr #</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Client Details</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Fee</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Sr#</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Payment Status</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Time</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Days</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
+            <Table.ColumnHeaderCell>Gender</Table.ColumnHeaderCell>
+            {session && (
+              <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+            )}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -32,7 +36,7 @@ const LoadingClientsPage = () => {
               </Table.Cell>
               <Table.Cell>
                 {" "}
-                <Skeleton count={3} />{" "}
+                <Skeleton />{" "}
               </Table.Cell>
               <Table.Cell>
                 {" "}
@@ -50,6 +54,11 @@ const LoadingClientsPage = () => {
               <Table.Cell>
                 <Skeleton />
               </Table.Cell>
+              {session && (
+                <Table.Cell>
+                  <Skeleton />
+                </Table.Cell>
+              )}
             </Table.Row>
           ))}
         </Table.Body>
