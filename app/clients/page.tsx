@@ -18,6 +18,7 @@ interface Props {
 
 type ClientWithStatus = Client & {
   assignedTrainer: { id: number; name: string } | null;
+  groupClass: { name: string } | null;
   _count: { payments: number };
   paymentStatus?: "paid" | "pending";
 };
@@ -26,13 +27,14 @@ const ClientsPage = async ({ searchParams }: Props) => {
   let clients: ClientWithStatus[] = await prisma.client.findMany({
     include: {
       assignedTrainer: { select: { id: true, name: true } },
+      groupClass: { select: { name: true } },
       _count: {
         select: {
           payments: true,
         },
       },
     },
-    orderBy: { id: "asc" },
+    orderBy: { id: "desc" },
   });
 
   // Add computed status to each client
@@ -65,7 +67,6 @@ const ClientsPage = async ({ searchParams }: Props) => {
           <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
           <Table.ColumnHeaderCell>Fee</Table.ColumnHeaderCell>
           <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
-          <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
           <Table.ColumnHeaderCell>Payment Status</Table.ColumnHeaderCell>
           {session && <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>}
         </Table.Row>
@@ -82,7 +83,7 @@ const ClientsPage = async ({ searchParams }: Props) => {
               <Table.Cell>{client.id}</Table.Cell>
               <Table.Cell>
                 <Flex direction="column" gap="2">
-                  <Text>{client.name}</Text>
+                  <Text className="capitalize">{client.name}</Text>
                   <Text>
                     <GenderBadge gender={client.gender} />
                   </Text>
@@ -92,12 +93,20 @@ const ClientsPage = async ({ searchParams }: Props) => {
                   </Text>
                 </Flex>
               </Table.Cell>
-              <Table.Cell>{client.category}</Table.Cell>
-              <Table.Cell>{client.fee}</Table.Cell>
-              <Table.Cell>{client.shift}</Table.Cell>
               <Table.Cell>
-                {client.assignedTrainer ? client.assignedTrainer.name : "-"}
+                <Flex direction="column" gap="2">
+                  <Text className="capitalize">{client.category}</Text>
+                  {client.category == "personal" ? (
+                    <Text>Trainer: {client.assignedTrainer?.name}</Text>
+                  ) : client.category == "group" ? (
+                    <Text>Class: {client.groupClass?.name}</Text>
+                  ) : (
+                    ""
+                  )}
+                </Flex>
               </Table.Cell>
+              <Table.Cell>{client.fee}</Table.Cell>
+              <Table.Cell className="capitalize">{client.shift}</Table.Cell>
               <Table.Cell>
                 <PaymentStatus
                   joinedAt={client.joinedAt}

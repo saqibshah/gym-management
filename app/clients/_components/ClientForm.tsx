@@ -1,17 +1,17 @@
 "use client";
 
 import { ErrorMessage, Skeleton, Spinner } from "@/app/components";
+import SelectGroupClass from "@/app/components/SelectGroupClass";
 import { clientSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Client, Trainer } from "@prisma/client";
 import { Button, Callout, Flex, Select, TextField } from "@radix-ui/themes";
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
-import { useQuery } from "@tanstack/react-query";
-import SelectGroupClass from "@/app/components/SelectGroupClass";
 
 type ClientFormData = z.infer<typeof clientSchema>;
 
@@ -22,11 +22,14 @@ const ClientForm = ({ client }: { client?: Client }) => {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<ClientFormData>({
     resolver: zodResolver(clientSchema),
   });
   const [error, setError] = useState("");
   const [isSubmitting, setSubmitting] = useState(false);
+
+  const category = watch("category");
 
   const onSubmit = handleSubmit(async (data) => {
     // console.log(data);
@@ -120,7 +123,8 @@ const ClientForm = ({ client }: { client?: Client }) => {
         </Flex>
         <ErrorMessage>{errors.category?.message}</ErrorMessage>
 
-        {!trainerError &&
+        {category === "personal" &&
+          !trainerError &&
           (isLoading ? (
             <Skeleton width="8rem" />
           ) : (
@@ -156,11 +160,13 @@ const ClientForm = ({ client }: { client?: Client }) => {
           ))}
         <ErrorMessage>{errors.assignedTrainerId?.message}</ErrorMessage>
 
-        <SelectGroupClass
-          control={control}
-          errors={errors}
-          value={client?.groupClassId}
-        />
+        {category === "group" && (
+          <SelectGroupClass
+            control={control}
+            errors={errors}
+            value={client?.groupClassId}
+          />
+        )}
 
         <TextField.Root
           defaultValue={client?.fee}

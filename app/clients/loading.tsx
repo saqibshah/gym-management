@@ -1,9 +1,12 @@
 import { Flex, Table } from "@radix-ui/themes";
+import { getServerSession } from "next-auth";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import authOptions from "../auth/authOptions";
 
-const LoadingClientsPage = () => {
+const LoadingClientsPage = async () => {
   const clients = [1, 2, 3, 4, 5];
+  const session = await getServerSession(authOptions);
   return (
     <div>
       <Flex mb="5" justify="between">
@@ -19,8 +22,10 @@ const LoadingClientsPage = () => {
             <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Fee</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Shift</Table.ColumnHeaderCell>
-            <Table.ColumnHeaderCell>Trainer</Table.ColumnHeaderCell>
             <Table.ColumnHeaderCell>Payment Status</Table.ColumnHeaderCell>
+            {session && (
+              <Table.ColumnHeaderCell>Actions</Table.ColumnHeaderCell>
+            )}
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -32,7 +37,7 @@ const LoadingClientsPage = () => {
               </Table.Cell>
               <Table.Cell>
                 {" "}
-                <Skeleton count={3} />{" "}
+                <Skeleton count={4} />{" "}
               </Table.Cell>
               <Table.Cell>
                 {" "}
@@ -47,9 +52,15 @@ const LoadingClientsPage = () => {
               <Table.Cell>
                 <Skeleton />
               </Table.Cell>
-              <Table.Cell>
-                <Skeleton />
-              </Table.Cell>
+              {session && (
+                <Table.Cell>
+                  <Flex direction="column" gap="4">
+                    <Skeleton height={32} />
+                    <Skeleton height={32} />
+                    <Skeleton height={32} />
+                  </Flex>
+                </Table.Cell>
+              )}
             </Table.Row>
           ))}
         </Table.Body>
