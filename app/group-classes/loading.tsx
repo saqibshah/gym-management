@@ -1,7 +1,7 @@
-import { Flex, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
+import { getServerSession } from "next-auth";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { getServerSession } from "next-auth";
 import authOptions from "../auth/authOptions";
 import Actions from "../components/Actions";
 

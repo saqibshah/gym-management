@@ -1,17 +1,16 @@
 import authOptions from "@/app/auth/authOptions";
 import { prisma } from "@/prisma/client";
+import { Client } from "@prisma/client";
 import { Button, Flex, Table, Text } from "@radix-ui/themes";
 import { format } from "date-fns";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import Actions from "../components/Actions";
 import DeleteButton from "../components/DeleteButton";
 import EditButton from "../components/EditButton";
 import GenderBadge from "../components/GenderBadge";
+import { cycleMonths } from "../libs/cycleMonths";
 import PaymentStatus from "./_components/PaymentStatus";
 import ClientPaymentFilter from "./ClientPaymentFilter";
-import { cycleMonths } from "../libs/cycleMonths";
-import { Client } from "@prisma/client";
 
 interface Props {
   searchParams: Promise<{ status: "all" | "paid" | "pending" }>;
