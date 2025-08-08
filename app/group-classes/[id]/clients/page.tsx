@@ -1,8 +1,9 @@
 import PaymentStatus from "@/app/clients/_components/PaymentStatus";
 import { GenderBadge } from "@/app/components";
 import { prisma } from "@/prisma/client";
-import { Callout, Flex, Heading, Table, Text } from "@radix-ui/themes";
+import { Button, Callout, Flex, Heading, Table, Text } from "@radix-ui/themes";
 import { format } from "date-fns";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import React from "react";
 
@@ -31,12 +32,17 @@ const GroupClassClients = async ({ params }: Props) => {
 
   return (
     <div>
-      <Flex direction="column" gap="3" mb="5">
-        <Heading>{groupClass.name}</Heading>
-        <Text>Trainer: {groupClass.trainer.name}</Text>
-        <Text>Shift: {groupClass.shift}</Text>
-        <Text>Time: {groupClass.time}</Text>
-        <Text>Days: {groupClass.days.join(", ")}</Text>
+      <Flex mb="5" justify="between">
+        <Flex direction="column" gap="3" mb="5">
+          <Heading>{groupClass.name}</Heading>
+          <Text>Trainer: {groupClass.trainer.name}</Text>
+          <Text>Shift: {groupClass.shift}</Text>
+          <Text>Time: {groupClass.time}</Text>
+          <Text>Days: {groupClass.days.join(", ")}</Text>
+        </Flex>
+        <Button>
+          <Link href={`/clients`}>Add Client</Link>
+        </Button>
       </Flex>
 
       {groupClass.clients.length ? (

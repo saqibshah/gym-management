@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { useQuery } from "@tanstack/react-query";
+import SelectGroupClass from "@/app/components/SelectGroupClass";
 
 type ClientFormData = z.infer<typeof clientSchema>;
 
@@ -153,8 +154,13 @@ const ClientForm = ({ client }: { client?: Client }) => {
               />
             </Flex>
           ))}
-
         <ErrorMessage>{errors.assignedTrainerId?.message}</ErrorMessage>
+
+        <SelectGroupClass
+          control={control}
+          errors={errors}
+          value={client?.groupClassId}
+        />
 
         <TextField.Root
           defaultValue={client?.fee}
