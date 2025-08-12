@@ -142,13 +142,13 @@ const ClientsPage = async ({ searchParams }: Props) => {
 
   return (
     <div>
-      {/* <Actions href="/clients/new" title="Add New Client" /> */}
-
       <Flex mb="5" justify="between">
         <ClientPaymentFilter />
-        <Button>
-          <Link href="/clients/new">Add New Client</Link>
-        </Button>
+        {session && (
+          <Button>
+            <Link href="/clients/new">Add New Client</Link>
+          </Button>
+        )}
       </Flex>
 
       <Table.Root variant="surface">
