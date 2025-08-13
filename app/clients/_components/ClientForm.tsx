@@ -6,14 +6,13 @@ import { clientSchema } from "@/app/validationSchemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Client, Trainer } from "@prisma/client";
 import {
+  Box,
   Button,
   Callout,
-  Flex,
   Grid,
   Select,
-  TextField,
   Text,
-  Box,
+  TextField,
 } from "@radix-ui/themes";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
