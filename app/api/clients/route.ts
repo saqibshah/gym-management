@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       shift: body.shift,
       assignedTrainerId: body.assignedTrainerId,
       groupClassId: body.groupClassId,
+      joinedAt: new Date(body.joinedAt),
     },
   });
 

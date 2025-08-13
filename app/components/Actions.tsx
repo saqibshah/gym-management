@@ -10,7 +10,7 @@ interface Props {
 
 const Actions = async ({ title, href }: Props) => {
   const session = await getServerSession(authOptions);
-  if (!session) return;
+  if (!session) return null;
   return (
     <div className="mb-4">
       <Button>

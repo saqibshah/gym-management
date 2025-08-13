@@ -50,6 +50,7 @@ export async function PATCH(
       shift: body.shift,
       assignedTrainerId: body.assignedTrainerId,
       groupClassId: body.groupClassId,
+      joinedAt: new Date(body.joinedAt),
     },
   });
 

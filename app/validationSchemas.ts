@@ -17,6 +17,9 @@ export const clientSchema = z.object({
   shift: z.enum(["morning", "evening"], "Shift is required."),
   assignedTrainerId: z.number().optional().nullable(),
   groupClassId: z.number().optional().nullable(),
+  joinedAt: z
+    .string()
+    .refine((val) => !isNaN(Date.parse(val)), "Enter a valid date"),
 });
 
 export const trainerSchema = z.object({
