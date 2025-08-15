@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
+import { formatMoney } from "../libs/formatMoney";
 
 const PaymentsPage = async () => {
   const payments = await prisma.payment.findMany({
@@ -28,7 +29,7 @@ const PaymentsPage = async () => {
         {payments.map((payment) => (
           <Table.Row key={payment.id}>
             <Table.Cell>{payment.client.name}</Table.Cell>
-            <Table.Cell>{payment.amount}</Table.Cell>
+            <Table.Cell>{formatMoney(payment.amount)}</Table.Cell>
             <Table.Cell>{payment.paidAt.toDateString()}</Table.Cell>
             <Table.Cell>{payment.method}</Table.Cell>
           </Table.Row>

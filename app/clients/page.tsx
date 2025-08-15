@@ -11,6 +11,7 @@ import GenderBadge from "../components/GenderBadge";
 import { cycleMonths } from "../libs/cycleMonths";
 import PaymentStatus from "./_components/PaymentStatus";
 import ClientPaymentFilter from "./ClientPaymentFilter";
+import { formatMoney } from "../libs/formatMoney";
 
 interface Props {
   searchParams: Promise<{ status: "all" | "paid" | "pending" }>;
@@ -105,7 +106,7 @@ const ClientsPage = async ({ searchParams }: Props) => {
                   )}
                 </Flex>
               </Table.Cell>
-              <Table.Cell>{client.fee}</Table.Cell>
+              <Table.Cell>{formatMoney(client.fee)}</Table.Cell>
               <Table.Cell className="capitalize">{client.shift}</Table.Cell>
               <Table.Cell>
                 <PaymentStatus
