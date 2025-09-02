@@ -10,3 +10,5 @@ export default function Home() {
     </Grid>
   );
 }
+
+export const dynamic = "force-dynamic";

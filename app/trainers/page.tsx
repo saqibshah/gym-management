@@ -74,4 +74,6 @@ const TrainersPage = async () => {
   );
 };
 
+export const dynamic = "force-dynamic";
+
 export default TrainersPage;
